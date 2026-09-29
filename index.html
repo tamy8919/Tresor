@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tresor</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f3f8;--card:#fff;--tx:#1d1b26;--mu:#77748a;--bd:#e3e1ec}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14121c;--card:#1e1b2b;--tx:#eeecf6;--mu:#9b98b0;--bd:#33304a}}
+:root[data-theme="dark"]{--bg:#14121c;--card:#1e1b2b;--tx:#eeecf6;--mu:#9b98b0;--bd:#33304a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,sans-serif;padding:16px;max-width:900px;margin:auto}
+header{flex-wrap:wrap;display:flex;align-items:center;gap:12px;margin-bottom:16px}
+header h1{margin:0;font-size:24px}
+button,input,select{font:inherit}
+button{cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:8px 12px}
+button.p{background:#6d4aff;color:#fff;border-color:#6d4aff}
+input{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;width:100%}
+.cat{margin-bottom:22px}
+.cath{display:flex;align-items:center;gap:8px;border-bottom:3px solid;padding-bottom:4px;margin-bottom:8px}
+.cath h2{margin:0;flex:1;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:26px}
+.row{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 12px;margin-bottom:6px;display:grid;grid-template-columns:1fr 1.3fr 1fr 1.6fr auto auto;gap:10px;align-items:center}.row>*{overflow-wrap:anywhere;min-width:0}
+.main{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;align-items:center}
+.main>*{overflow-wrap:anywhere}
+.main .r{text-align:right}
+.name{font-weight:600}.mail{color:var(--mu)}
+.pw{font-family:ui-monospace,monospace;cursor:pointer}
+.extra{font-size:13px;color:var(--mu);display:flex;flex-wrap:wrap;gap:6px 16px}
+.extra b{color:var(--tx)}
+.imgs{display:flex;gap:6px;flex-wrap:wrap}.im{position:relative}.im button{position:absolute;top:-6px;right:-6px;padding:0 6px;font-size:13px;border-radius:50%;line-height:18px}
+.imgs img{height:44px;border-radius:8px;border:1px solid var(--bd);cursor:zoom-in}
+.acts{display:flex;gap:4px}
+.acts button{padding:3px 8px;font-size:13px}
+dialog{max-height:85vh;overflow:auto;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:14px;max-width:460px;width:92%}
+dialog label{display:block;margin:8px 0 2px;font-size:13px;color:var(--mu)}
+.ex{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:4px}
+@media(max-width:700px){.row{grid-template-columns:1fr 1fr}}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#6d4aff"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+</head><body>
+<header>
+<svg width="44" height="44" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5fa2"/><stop offset="1" stop-color="#6d4aff"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#g)"/><path d="M32 12l15 9v14c0 8-6 14-15 17-9-3-15-9-15-17V21z" fill="none" stroke="#fff" stroke-width="3"/><circle cx="32" cy="27" r="4" fill="#fff"/><path d="M32 31v13M32 38h5M32 43h4" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+<h1 style="flex:1">Tresor</h1>
+<button class="p" onclick="openCat()">+ Kategorie</button><button onclick="doExport()">⬇ Export</button><button onclick="$('imp').click()">⬆ Import</button><button onclick="dl.showModal()">§ Rechtliches</button><button onclick="lock()">🔒 Sperren</button><button id="bb" onclick="bioToggle()">👆 Biometrie</button><input id="imp" type="file" accept=".json,application/json" hidden>
+</header>
+<div id="app"></div>
+
+<dialog id="dc"><h3>Kategorie</h3>
+<label>Titel</label><input id="ct" placeholder="z. B. Soziale Medien">
+<label>Farbe</label><input id="cc" type="color" value="#6d4aff">
+<label>Größe</label><select id="cs" style="width:100%;padding:8px"><option value="h1">H1 (groß)</option><option value="h2" selected>H2 (mittel)</option><option value="h3">H3 (klein)</option></select>
+<p><button class="p" onclick="saveCat()">Speichern</button> <button onclick="dc.close()">Abbrechen</button></p></dialog>
+
+<dialog id="de"><h3>Eintrag</h3>
+<label>Name der App</label><input id="en" placeholder="Facebook">
+<label>E-Mail / Benutzername</label><input id="em">
+<label>Passwort</label><input id="ep">
+<label>Weitere Angaben (z. B. Sicherheitsnummer)</label><div id="exs"></div>
+<button onclick="addEx()" style="margin-top:6px">+ Angabe</button>
+<label>Fotos (z. B. Schlüssel)</label><input id="ei" type="file" accept="image/*" multiple>
+<div class="imgs" id="prev"></div>
+<p><button class="p" onclick="saveE()">Speichern</button> <button onclick="de.close()">Abbrechen</button></p></dialog>
+
+<div id="lk" style="position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:9;padding:16px"><div style="max-width:340px;width:100%;text-align:center"><h2 id="lt"></h2><p id="lh" style="font-size:13px;color:var(--mu)"></p><input id="lp" type="password" placeholder="Master-Passwort" autocomplete="off"><input id="lp2" type="password" placeholder="Wiederholen" autocomplete="off" style="margin-top:8px"><p id="lm" style="color:#e5484d;min-height:1em"></p><label id="lcw" style="display:none;text-align:left;font-size:14px;margin:6px 0"><input type="checkbox" id="lc" style="width:auto"> Ich habe die Warnung verstanden.</label><button class="p" onclick="unlock()">OK</button><button id="lb" onclick="bioUnlock()" style="display:none;width:100%;margin-top:10px">👆 Mit Fingerabdruck / Gesicht entsperren</button></div></div>
+<dialog id="dp"><h3>Master-Passwort der Sicherung</h3><input id="pi" type="password"><p><button class="p" onclick="pgo()">OK</button> <button onclick="dp.close()">Abbrechen</button></p></dialog>
+<dialog id="dx"><h3>Export</h3><p style="font-size:13px">Kopiere den Text und speichere ihn in einer Datei (.json). Die Daten sind verschlüsselt. Zum Import brauchst du das Master-Passwort.</p><textarea id="xt" rows="8" style="width:100%"></textarea><p><button class="p" onclick="$('xt').select();navigator.clipboard&&navigator.clipboard.writeText($('xt').value)">Kopieren</button> <button onclick="dx.close()">Schließen</button></p></dialog>
+<dialog id="dl" style="max-width:600px"><h3>Datenschutzerklärung</h3>
+<p style="font-size:13px;color:var(--mu)">Entwurf/Vorlage, keine Rechtsberatung. Bitte juristisch prüfen lassen.</p>
+<p style="font-size:14px"><b>Verantwortlich:</b> Tamara Jost, Via Villa di Panicale 2, 54016 Licciana Nardi (Italien), ta.jost81@gmail.com.<br><b>Keine Datenerhebung:</b> Alle Eingaben (Titel, Zugangsdaten, Notizen, Fotos) werden ausschließlich lokal im Speicher deines Geräts abgelegt. Wir übertragen, sammeln oder analysieren keine Daten, es gibt keine Konten, Werbung oder Tracker.<br><b>Verschlüsselung:</b> Deine Daten werden mit deinem Master-Passwort (AES-256-GCM) verschlüsselt gespeichert, ebenso Sicherungsdateien. Optional kannst du per Fingerabdruck oder Gesichtserkennung entsperren; das nutzt die Sicherheitsfunktion deines Geräts, biometrische Daten verlassen dein Gerät nie und werden von uns nicht gespeichert. Das Passwort kennt nur du. Es kann nicht zurückgesetzt werden; bei Verlust sind die Daten nicht wiederherstellbar.<br><b>Löschung:</b> Über die Lösch-Buttons der App oder durch Löschen der App-/Browserdaten. Wir haben keinen Zugriff auf deine Daten und können sie nicht wiederherstellen.<br><b>Deine Rechte</b> (DSGVO): Auskunft, Berichtigung, Löschung. Da wir keine Daten von dir speichern, betreffen sie nur dein Gerät. Kontakt: ta.jost81@gmail.com. Beschwerderecht bei deiner Datenschutzbehörde.</p>
+<h3>Nutzungsbedingungen</h3>
+<p style="font-size:14px">Die App ist kostenlos und wird „wie besehen" bereitgestellt. Du bist selbst für Sicherung (Export) und Geheimhaltung deiner Daten verantwortlich. Sie ist kein zertifizierter Passwortmanager. Soweit gesetzlich zulässig, haften wir nicht für Datenverlust oder unbefugten Zugriff auf dein Gerät. Für Vorsatz und grobe Fahrlässigkeit sowie Personenschäden gilt die gesetzliche Haftung. Anwendbares Recht: Italien.</p>
+<p><button onclick="dl.close()">Schließen</button></p></dialog>
+<dialog id="dz"><img id="big" style="max-width:100%"><p><button onclick="dz.close()">Schließen</button></p></dialog>
+
+<script>
+let D=[],KEY=null,SALT=null,PCB=null,T,PW='';
+const enc=new TextEncoder();
+function b64(b){let s='',a=new Uint8Array(b);for(let i=0;i<a.length;i+=8192)s+=String.fromCharCode(...a.subarray(i,i+8192));return btoa(s)}
+const ub=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function kdf(pw,salt){const m=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:600000,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function seal(){const iv=crypto.getRandomValues(new Uint8Array(12)),ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},KEY,enc.encode(JSON.stringify(D)));return JSON.stringify({tresor:2,salt:b64(SALT),iv:b64(iv),ct:b64(ct)})}
+async function unseal(blob,pw){const o=JSON.parse(blob),salt=ub(o.salt),k=await kdf(pw,salt),pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(o.iv)},k,ub(o.ct));return{data:JSON.parse(new TextDecoder().decode(pt)),k,salt}}
+function lockUI(){const has=!!localStorage.getItem('tresor2');$('lk').style.display='flex';$('lt').textContent=has?'Entsperren':'Master-Passwort festlegen';$('lp2').style.display=has?'none':'block';$('lcw').style.display=has?'none':'block';$('lc').checked=false;
+$('lh').innerHTML=has?'':'<b>⚠️ Bitte unbedingt lesen</b><br>Dein Master-Passwort kann von niemandem zurückgesetzt werden, auch nicht von uns.<br>Wenn du es vergisst, sind alle deine Daten für immer verloren.<br><b>Schreib es dir deshalb auf</b> und bewahre es sicher auf. Mach außerdem regelmäßig einen <b>Export</b> (Sicherung) und speichere die Datei an einem sicheren Ort.';
+$('lh').style.cssText=has?'':'font-size:14px;text-align:left;border:2px solid #e5484d;border-radius:10px;padding:10px;margin:8px 0';
+$('lb').style.display=has&&localStorage.getItem('tresor_bio')&&window.PublicKeyCredential?'block':'none';$('lm').textContent='';$('lp').value='';$('lp2').value=''}
+async function unlock(){const pw=$('lp').value;try{if(localStorage.getItem('tresor2')){const r=await unseal(localStorage.getItem('tresor2'),pw);D=clean(r.data);KEY=r.k;SALT=r.salt}else{if(pw.length<8)return $('lm').textContent='Mindestens 8 Zeichen.';if(!$('lc').checked)return $('lm').textContent='Bitte bestätige, dass du die Warnung verstanden hast.';if(pw!==$('lp2').value)return $('lm').textContent='Eingaben stimmen nicht überein.';SALT=crypto.getRandomValues(new Uint8Array(16));KEY=await kdf(pw,SALT);try{D=clean(JSON.parse(localStorage.getItem('tresor')||'[]'))}catch(e){D=[]}await save();if(localStorage.getItem('tresor2'))localStorage.removeItem('tresor')}}catch(e){return $('lm').textContent='Falsches Passwort.'}PW=pw;$('lk').style.display='none';render();bump()}
+function lock(){PW='';D=[];KEY=null;SALT=null;$('app').innerHTML='';lockUI()}
+function bump(){clearTimeout(T);if(KEY)T=setTimeout(lock,300000)}
+['click','keydown','touchstart'].forEach(v=>addEventListener(v,bump));
+function pwAsk(cb){PCB=cb;$('pi').value='';$('dp').showModal()}
+function pgo(){const c=PCB;$('dp').close();c&&c($('pi').value)}
+async function prfGet(id,salt){const a=await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id}],userVerification:'required',extensions:{prf:{eval:{first:salt}}}}});const x=a.getClientExtensionResults().prf;return x&&x.results&&x.results.first}
+async function bioUnlock(){try{const o=JSON.parse(localStorage.getItem('tresor_bio')),out=await prfGet(ub(o.id),ub(o.salt));if(!out)throw 0;const k=await crypto.subtle.importKey('raw',out,'AES-GCM',false,['decrypt']);$('lp').value=new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(o.iv)},k,ub(o.ct)));await unlock()}catch(e){$('lm').textContent='Fingerabdruck/Gesicht hat nicht funktioniert. Bitte das Master-Passwort verwenden.'}}
+async function bioToggle(){if(localStorage.getItem('tresor_bio')){if(confirm('Entsperren per Fingerabdruck/Gesicht ausschalten?'))localStorage.removeItem('tresor_bio');return}
+try{const salt=crypto.getRandomValues(new Uint8Array(32)),cred=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'Tresor'},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'tresor',displayName:'Tresor'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'},extensions:{prf:{}}}});
+if(!(cred.getClientExtensionResults().prf||{}).enabled||!PW)throw 0;const out=await prfGet(cred.rawId,salt);if(!out)throw 0;const k=await crypto.subtle.importKey('raw',out,'AES-GCM',false,['encrypt']),iv=crypto.getRandomValues(new Uint8Array(12)),ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,enc.encode(PW));localStorage.setItem('tresor_bio',JSON.stringify({id:b64(cred.rawId),salt:b64(salt),iv:b64(iv),ct:b64(ct)}));alert('Aktiviert. Beim nächsten Mal kannst du per Fingerabdruck/Gesicht entsperren. Das Master-Passwort brauchst du trotzdem weiterhin, z. B. auf einem neuen Gerät.')}catch(e){alert('Das hat nicht geklappt. Dein Gerät oder dieser Browser unterstützt es hier nicht, oder du hast abgebrochen. Das Master-Passwort funktioniert weiterhin.')}}
+
+let ci=null,ei=null,tmpImgs=[];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function save(){try{localStorage.setItem('tresor2',await seal())}catch(e){alert('Speichern fehlgeschlagen (Speicher voll? Weniger/kleinere Fotos verwenden).')}render()}
+function render(){
+$('app').innerHTML=D.length?D.map((c,i)=>`<div class="cat"><div class="cath" style="border-color:${c.color}"><${c.size} style="margin:0;flex:1;color:${c.color};font-family:Georgia,serif;font-style:italic">${esc(c.title)}</${c.size}><button onclick="openE(${i})">+ Eintrag</button><button onclick="openCat(${i})">✎</button><button onclick="delCat(${i})">🗑</button></div>`+
+c.items.map((e,j)=>`<div class="row"><div class="name">${esc(e.name)}</div><div class="mail">${esc(e.email)}</div><div class="pw" data-i="${i}" data-j="${j}" onclick="tog(this)" title="Tippen: zeigen">••••••••</div><div class="extra">${e.extra.map(x=>`<span>${esc(x[0])}: <b>${esc(x[1])}</b></span>`).join('')}</div><div class="imgs">${e.imgs.map((s,k)=>`<span class="im"><img src="${esc(s)}" onclick="zoom(this.src)"><button onclick="delImg(${i},${j},${k})" title="Foto löschen">×</button></span>`).join('')}</div><div class="acts"><button onclick="cp(${i},${j})">⧉</button><button onclick="openE(${i},${j})">✎</button><button onclick="delE(${i},${j})">🗑</button></div></div>`).join('')+`</div>`).join(''):'<p style="color:var(--mu)">Noch nichts da. Lege oben eine Kategorie an.</p>'}
+function tog(el){const e=D[el.dataset.i].items[el.dataset.j];el.textContent=el.textContent==='••••••••'?e.pw:'••••••••'}
+function cp(i,j){navigator.clipboard&&navigator.clipboard.writeText(D[i].items[j].pw).catch(()=>{})}
+function zoom(s){$('big').src=s;$('dz').showModal()}
+function openCat(i){ci=i??null;const c=D[i]||{title:'',color:'#6d4aff',size:'h2'};$('ct').value=c.title;$('cc').value=c.color;$('cs').value=c.size;$('dc').showModal()}
+function saveCat(){const t=$('ct').value.trim();if(!t)return;const o={title:t,color:$('cc').value,size:$('cs').value};if(ci===null)D.push({...o,items:[]});else Object.assign(D[ci],o);$('dc').close();save()}
+function delCat(i){if(confirm('Kategorie samt Einträgen löschen?')){D.splice(i,1);save()}}
+function addEx(a='',b=''){const d=document.createElement('div');d.className='ex';d.innerHTML=`<input placeholder="Bezeichnung" value="${esc(a)}"><input placeholder="Wert" value="${esc(b)}"><button onclick="this.parentNode.remove()">×</button>`;$('exs').appendChild(d)}
+function prev(){$('prev').innerHTML=tmpImgs.map((s,k)=>`<span class="im"><img src="${esc(s)}"><button onclick="tmpImgs.splice(${k},1);prev()">×</button></span>`).join('')}
+function delImg(i,j,k){if(confirm('Foto löschen?')){D[i].items[j].imgs.splice(k,1);save()}}
+function openE(i,j){ci=i;ei=j??null;const e=j!=null?D[i].items[j]:{name:'',email:'',pw:'',extra:[],imgs:[]};$('en').value=e.name;$('em').value=e.email;$('ep').value=e.pw;$('exs').innerHTML='';e.extra.forEach(x=>addEx(x[0],x[1]));tmpImgs=[...e.imgs];$('ei').value='';prev();$('de').showModal()}
+$('ei').onchange=async ev=>{for(const f of ev.target.files){tmpImgs.push(await shrink(f))}prev()};
+function shrink(f){return new Promise(r=>{const im=new Image();im.onload=()=>{const k=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.7))};im.src=URL.createObjectURL(f)})}
+function saveE(){const n=$('en').value.trim();if(!n)return;const extra=[...document.querySelectorAll('#exs .ex')].map(d=>[d.children[0].value,d.children[1].value]).filter(x=>x[0]||x[1]);const e={name:n,email:$('em').value,pw:$('ep').value,extra,imgs:tmpImgs};if(ei===null)D[ci].items.push(e);else D[ci].items[ei]=e;$('de').close();save()}
+function delE(i,j){if(confirm('Eintrag löschen?')){D[i].items.splice(j,1);save()}}
+async function doExport(){const data=localStorage.getItem('tresor2');if(!data)return;let dw=null;try{dw=window.claude&&await claude.use('downloads')}catch(e){}
+if(dw){try{await dw.save({filename:'tresor-backup.json',data});return}catch(e){if(e&&e.code==='declined')return}}
+if(window.self===window.top){try{const u=URL.createObjectURL(new Blob([data],{type:'application/json'})),l=document.createElement('a');l.href=u;l.download='tresor-backup.json';document.body.appendChild(l);l.click();l.remove();return}catch(e){}}
+$('xt').value=data;$('dx').showModal()}
+const clean=arr=>arr.map(c=>({title:String(c.title||'Kategorie'),color:/^#[0-9a-f]{6}$/i.test(c.color)?c.color:'#6d4aff',size:['h1','h2','h3'].includes(c.size)?c.size:'h2',items:(Array.isArray(c.items)?c.items:[]).map(e=>({name:String(e.name||''),email:String(e.email||''),pw:String(e.pw||''),extra:(Array.isArray(e.extra)?e.extra:[]).map(x=>[String(x[0]||''),String(x[1]||'')]),imgs:(Array.isArray(e.imgs)?e.imgs:[]).filter(u=>typeof u==='string'&&u.startsWith('data:image/'))}))}));
+$('imp').onchange=async ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;const t=await f.text();let j;try{j=JSON.parse(t)}catch(e){return alert('Datei ungültig.')}
+if(j&&j.ct)pwAsk(async pw=>{try{apply(clean((await unseal(t,pw)).data))}catch(e){alert('Falsches Passwort oder Datei defekt.')}});else try{apply(clean(Array.isArray(j)?j:j.data))}catch(e){alert('Datei ungültig.')}};
+function apply(a){if(confirm('OK = bestehende Daten ERSETZEN\nAbbrechen = mit vorhandenen zusammenführen'))D=a;else D=D.concat(a);save()}
+['lp','lp2'].forEach(i=>$(i).onkeydown=e=>{if(e.key==='Enter')unlock()});
+if(!window.PublicKeyCredential)$('bb').style.display='none';
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+lockUI();
+</script></body></html>
