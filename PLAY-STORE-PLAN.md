@@ -21,7 +21,7 @@ Stand: 9. November 2026. Preise und Regeln unten stammen aus meiner Recherche he
 ## 2. Was ich schon eingebaut habe (Ordner `play/`)
 
 - Gratis-Regeln (10 Einträge, keine Kategorien, ein Login pro Eintrag) mit Sperre beim Anlegen, beim Import und beim Zusammenführen. Bestehende Daten werden nie gelöscht.
-- **Gutschein-Codes** (Menü „🎟 Code einlösen“): Die App prüft eine digitale Unterschrift auf dem Gerät, nichts wird übertragen. Codes erzeugst du mit `make-codes.js` (Ordner `tresor-codes`, nicht auf GitHub hochladen!). Funktioniert im Browser und in der Android-App.
+- **Privater Gutschein-Code** nur für dich (Menü „🎟 Code einlösen“, für PC und Handy). Die App prüft beim Start die Liste `gutscheine.json` in deinem Repository. Code zurückziehen = Zeile in der Datei auf github.com löschen. Offline bleibt Pro 14 Tage. Geschenke an andere laufen über Einmal-Codes aus der Play Console.
 - Pro-Freischaltung über Play Billing (Digital Goods API) und „Kauf wiederherstellen“.
 - Menüpunkte **📤 App teilen** (Teilen-Dialog des Handys, sonst Link kopieren) und **⭐ Pro**. Deutsch und Italienisch.
 - Datenschutz-Abschnitt um den Kauf ergänzt, eigene Seite `datenschutz.html` (Play braucht eine öffentliche Datenschutz-URL).
