@@ -13,14 +13,15 @@ Stand: 9. November 2026. Preise und Regeln unten stammen aus meiner Recherche he
 
 **Empfehlung für Tresor**
 - Einmalkauf **„Tresor Pro“, 4,99 €** (sinnvoll: 3,99 bis 6,99 €). Kein Abo, weil du keine Serverkosten hast und ein Einmalpreis zu „ohne Konto, ohne Tracker“ passt.
-- Gratis-Version: **20 Konten** (in `FREE_MAX` einstellbar). Die großen Anbieter sind gratis unbegrenzt, darum darf das Limit nicht zu knapp sein, sonst gibt es schlechte Bewertungen.
+- Gratis-Version: **10 Einträge**, **keine Kategorien**, **ein Login pro Eintrag** (`FREE_MAX` in der Datei einstellbar). Die großen Anbieter sind gratis unbegrenzt, darum kann es bei einem so strengen Limit Kritik geben. Pro: unbegrenzt, Kategorien, mehrere Logins pro Eintrag.
 - Im Play Store die App selbst **gratis** anbieten und Pro als **In-App-Produkt** (Typ: einmalig) verkaufen. Google verlangt Play Billing für digitale Käufe. Ein bezahlter Download passt hier nicht, weil Gratis + Pro nur so geht.
 - Google-Gebühr: 15 % auf die ersten 1 Mio. $/Jahr, wenn du dich für die 15-%-Stufe anmeldest. Google nennt für EU/UK/US ab Mitte 2026 teils neue Sätze (10 % + 5 % Abrechnungsgebühr). Rechne mit 10 bis 20 % Abzug. Von 4,99 € bleiben dir grob 4 €.
 - Steuern: Das Einkommen musst du in Italien melden. Frag dazu bitte eine Steuerberatung (commercialista), ob du eine Partita IVA brauchst.
 
 ## 2. Was ich schon eingebaut habe (Ordner `play/`)
 
-- Gratis-Limit mit Sperre beim Anlegen, beim Import und beim Zusammenführen. Bestehende Daten werden nie gelöscht.
+- Gratis-Regeln (10 Einträge, keine Kategorien, ein Login pro Eintrag) mit Sperre beim Anlegen, beim Import und beim Zusammenführen. Bestehende Daten werden nie gelöscht.
+- **Gutschein-Codes** (Menü „🎟 Code einlösen“): Die App prüft eine digitale Unterschrift auf dem Gerät, nichts wird übertragen. Codes erzeugst du mit `make-codes.js` (Ordner `tresor-codes`, nicht auf GitHub hochladen!). Funktioniert im Browser und in der Android-App.
 - Pro-Freischaltung über Play Billing (Digital Goods API) und „Kauf wiederherstellen“.
 - Menüpunkte **📤 App teilen** (Teilen-Dialog des Handys, sonst Link kopieren) und **⭐ Pro**. Deutsch und Italienisch.
 - Datenschutz-Abschnitt um den Kauf ergänzt, eigene Seite `datenschutz.html` (Play braucht eine öffentliche Datenschutz-URL).
@@ -67,7 +68,7 @@ Tresor bewahrt deine Zugangsdaten verschlüsselt auf deinem Gerät auf. Du brauc
 • Optionaler Abgleich mit deinem eigenen Google Drive
 • Deutsch und Italienisch
 
-Gratis: bis zu 20 Konten. Mit Tresor Pro (einmaliger Kauf, kein Abo) unbegrenzt.
+Gratis: bis zu 10 Einträge. Mit Tresor Pro (einmaliger Kauf, kein Abo) unbegrenzt, mit Kategorien und mehreren Logins pro Eintrag.
 
 Wichtig: Dein Master-Passwort kann niemand zurücksetzen. Wer es vergisst, verliert die Daten. Mach regelmäßig einen Export.
 
