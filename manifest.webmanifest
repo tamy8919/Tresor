@@ -25,5 +25,13 @@
    "type": "image/png",
    "purpose": "maskable"
   }
- ]
+ ],
+ "id": "./",
+ "lang": "de",
+ "description": "Verschlüsselter Passwort-Tresor ohne Konto und ohne Tracker.",
+ "categories": [
+  "productivity",
+  "utilities"
+ ],
+ "orientation": "portrait"
 }
